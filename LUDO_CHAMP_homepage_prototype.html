@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#10091b">
+<title>LUDO CHAMP</title>
+<style>
+:root{--bg:#10091b;--panel:#1b102b;--panel2:#24143a;--purple:#8b42e8;--pink:#c05cff;--white:#fff;--muted:#b9a9ca;--gold:#ffd66b}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 50% -10%,#45206c 0,#1b102b 34%,var(--bg) 72%);color:var(--white);font-family:Arial,Helvetica,sans-serif;min-height:100vh}
+header{display:flex;justify-content:space-between;align-items:center;padding:18px clamp(16px,5vw,64px);border-bottom:1px solid #ffffff18;background:#10091b88;position:sticky;top:0;backdrop-filter:blur(12px);z-index:2}
+.brand{font-weight:900;font-size:22px;letter-spacing:1.5px}.brand span{color:var(--gold)}
+.badge{font-size:12px;color:#e8d8ff;border:1px solid #a66ae8;border-radius:30px;padding:8px 12px}
+main{width:min(960px,92%);margin:0 auto;padding:54px 0 36px}
+.hero{text-align:center;margin-bottom:34px}
+.crown{font-size:42px;filter:drop-shadow(0 5px 12px #0008)}
+h1{font-size:clamp(36px,8vw,64px);margin:8px 0 6px;letter-spacing:2px;text-shadow:0 0 24px #a34cff66}
+h1 span{color:var(--gold)}
+.tagline{color:var(--muted);font-size:15px;letter-spacing:2px}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.card{background:linear-gradient(145deg,#28163e,#170e25);border:1px solid #9b5be655;border-radius:20px;padding:24px;box-shadow:0 18px 40px #0004}
+.card h2{margin:0 0 8px;font-size:21px}.card p{margin:0 0 18px;color:var(--muted);font-size:14px;line-height:1.5}
+.icon{font-size:30px;margin-bottom:10px}
+label{display:block;font-size:13px;color:#dfd1ef;margin:12px 0 7px}
+input{width:100%;padding:14px 15px;border-radius:11px;border:1px solid #76529a;background:#10091b;color:#fff;font-size:16px;outline:none}
+input:focus{border-color:#c05cff;box-shadow:0 0 0 3px #a64aff22}
+button{width:100%;border:0;border-radius:11px;padding:14px 16px;margin-top:14px;background:linear-gradient(100deg,#7733d0,#b34df0);color:white;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 8px 22px #7a32c944}
+button:hover{filter:brightness(1.1)}button:active{transform:scale(.99)}
+.notice{margin-top:22px;padding:15px 17px;border:1px solid #ffd66b55;background:#ffd66b10;border-radius:13px;color:#f5dfaa;font-size:13px;line-height:1.55}
+.status{display:none;margin-top:14px;padding:12px;border-radius:10px;background:#ffffff10;color:#e8d8ff;font-size:14px;line-height:1.5;overflow-wrap:anywhere}
+.status.show{display:block}
+footer{text-align:center;color:#88799b;font-size:12px;padding:22px}
+@media(max-width:650px){header{padding:15px 18px}.cards{grid-template-columns:1fr}main{padding-top:36px}.card{padding:21px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">👑 LUDO <span>CHAMP</span></div>
+  <div class="badge">2 PLAYER PRIVATE ROOMS</div>
+</header>
+<main>
+  <section class="hero">
+    <div class="crown">👑</div>
+    <h1>LUDO <span>CHAMP</span></h1>
+    <div class="tagline">PLAY • CHALLENGE • ENJOY</div>
+  </section>
+
+  <section class="cards">
+    <div class="card">
+      <div class="icon">🏠</div>
+      <h2>Create a Private Room</h2>
+      <p>Choose a private room code and share it only with the other player.</p>
+      <label for="newCode">Create your room code</label>
+      <input id="newCode" maxlength="12" placeholder="Enter a code (e.g. CHAMP27)" autocomplete="off">
+      <button onclick="createRoom()">CREATE ROOM</button>
+      <div id="createStatus" class="status" aria-live="polite"></div>
+    </div>
+
+    <div class="card">
+      <div class="icon">🔐</div>
+      <h2>Join a Private Room</h2>
+      <p>Enter the exact room code shared by the other player.</p>
+      <label for="joinCode">Room code</label>
+      <input id="joinCode" maxlength="12" placeholder="Enter room code" autocomplete="off">
+      <button onclick="joinRoom()">JOIN ROOM</button>
+      <div id="joinStatus" class="status" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <div class="notice"><strong>🔒 Private room rule:</strong> Each room is intended for only 2 players. Do not share your room code publicly. This page is a visual prototype: real two-device room creation, private access, player accounts and admin controls need a secure online database/backend before launch.</div>
+</main>
+<footer>© LUDO CHAMP • Play fair and enjoy</footer>
+<script>
+function cleanCode(v){return v.trim().toUpperCase().replace(/[^A-Z0-9_-]/g,'')}
+function show(id,msg){const el=document.getElementById(id);el.textContent=msg;el.classList.add('show')}
+function createRoom(){
+ const code=cleanCode(document.getElementById('newCode').value);
+ if(code.length<4){show('createStatus','Please enter a room code with at least 4 letters or numbers.');return}
+ show('createStatus','Room code ready: '+code+'. Share it privately with ONE other player. Online room creation is not connected in this prototype.');
+}
+function joinRoom(){
+ const code=cleanCode(document.getElementById('joinCode').value);
+ if(code.length<4){show('joinStatus','Please enter a valid room code.');return}
+ show('joinStatus','Code entered: '+code+'. Live room lookup is not connected yet; a secure backend is needed to verify the room and allow only the second player.');
+}
+</script>
+</body>
+</html>
